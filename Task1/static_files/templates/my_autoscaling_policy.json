@@ -1,0 +1,19 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole",
+        "autoscaling:CreateAutoScalingGroup",
+        "autoscaling:UpdateAutoScalingGroup",
+        "autoscaling:DescribeAutoScalingGroups",
+        "autoscaling:DescribeAutoScalingInstances",
+        "autoscaling:DescribeLoadBalancers",
+        "autoscaling:AttachLoadBalancerTargetGroup",
+        "autoscaling:DetachLoadBalancerTargetGroup"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
