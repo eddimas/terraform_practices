@@ -176,7 +176,7 @@ cython_debug/
 **/.terraform/*
 *.terraform.lock*
 **/ssh_keys/*
-
+**/.secrets*
 # .tfstate files
 *.tfstate
 *.tfstate.*
