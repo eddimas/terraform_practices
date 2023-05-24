@@ -15,7 +15,7 @@ resource "aws_s3_bucket" "static_site_bucket" {
 # Define the S3 bucket policy
 resource "aws_s3_bucket_policy" "static_site_bucket_policy" {
   bucket = aws_s3_bucket.static_site_bucket.id
-  policy = file(var.bucket_policy)
+  policy = data.template_file.bucket_policy.rendered
 }
 
 
@@ -82,19 +82,22 @@ resource "aws_cloudfront_distribution" "static_site_distribution" {
   default_root_object = "index.html"
 
   origin {
-    domain_name = aws_s3_bucket.static_site_bucket.website_endpoint
-    origin_id   = "S3-${aws_s3_bucket.static_site_bucket.id}"
-
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "http-only"
-      origin_ssl_protocols   = ["TLSv1.2"]
-    }
+    domain_name              = "${aws_s3_bucket.static_site_bucket.bucket}.s3.${aws_s3_bucket.static_site_bucket.region}.amazonaws.com"
+    origin_id                = "S3-${aws_s3_bucket.static_site_bucket.id}"
+    origin_access_control_id = aws_cloudfront_origin_access_control.static_site_origin_access_control.id
   }
 
   aliases = [var.domain_name, "www.${var.domain_name}"]
 }
+
+resource "aws_cloudfront_origin_access_control" "static_site_origin_access_control" {
+  name                              = "static_site_origin_access_control"
+  description                       = "Restrict access to the static site"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
 
 # Create DNS records for the static site
 resource "aws_route53_record" "static_site_dns_record" {
@@ -112,7 +115,3 @@ resource "aws_route53_record" "static_site_dns_record" {
   }
 }
 
-resource "chatgpt_prompt" "example" {
-  query      = "Are you able to improove this Python code? If So chow me an example"
-  max_tokens = 256
-}

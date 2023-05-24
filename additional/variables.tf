@@ -17,8 +17,3 @@ variable "bucket_policy" {
   description = "The bucket policy to use for the static site"
   default     = "./templates/bucket_policy.json"
 }
-
-variable "chatgpt_api_key" {
-  description = "The ChatGPT API key to use for the static site"
-  type        = string
-}
